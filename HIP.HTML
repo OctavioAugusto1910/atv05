@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Pokémon - PokéAPI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background-color: #fff;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    img {
+      width: 50px;
+      height: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Buscar Pokémon</h1>
+  <input type="text" id="search" placeholder="Digite o nome do Pokémon">
+  <button onclick="buscarPokemon()">Buscar</button>
+
+  <ul id="resultado"></ul>
+
+  <script>
+    async function buscarPokemon() {
+      const nome = document.getElementById('search').value.trim().toLowerCase();
+      if (!nome) {
+        alert('Por favor, digite o nome de um Pokémon.');
+        return;
+      }
+
+      const url = `https://pokeapi.co/api/v2/pokemon/${nome}`;
+
+      try {
+        const resposta = await fetch(url);
+        const dados = await resposta.json();
+
+        console.log(dados); // Verificando a resposta da API
+
+        const lista = document.getElementById('resultado');
+        lista.innerHTML = '';
+
+        const item = document.createElement('li');
+        item.innerHTML = `
+          <img src="${dados.sprites.front_default}" alt="${dados.name}">
+          <strong>${dados.name}</strong><br>
+          Tipo: ${dados.types.map(type => type.type.name).join(', ')}<br>
+          Peso: ${dados.weight} hectogramas
+        `;
+        lista.appendChild(item);
+      } catch (erro) {
+        console.error('Erro ao buscar Pokémon:', erro);
+        const lista = document.getElementById('resultado');
+        lista.innerHTML = '<li>Pokémon não encontrado. Tente novamente.</li>';
+      }
+    }
+  </script>
+</body>
+</html>
